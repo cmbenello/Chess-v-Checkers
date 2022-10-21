@@ -1,7 +1,7 @@
 # A file containing all the contstants
 
 #Screen dimensions
-WIDTH = 600
+WIDTH = 800
 HEIGHT = WIDTH
 
 #Board dimensions
