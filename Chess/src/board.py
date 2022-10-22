@@ -9,9 +9,34 @@ class Board:
     def __init__(self) -> None:
         self.squares = [[0 for row in range(ROWS)] for col in range(COLS)]
 
+        self.last_move = None
         self._create()
         self._add_pieces("white")
         self._add_pieces("black")
+
+
+    def move(self, piece, move):
+        intial = move.intial
+        final = move.final
+
+        # console board move update 
+        
+        # The intial position of the peice
+        self.squares[intial.row][intial.col].piece = None
+        self.squares[final.row][final.col].piece = piece
+        
+        # Piece has now moved so update the moved attribute
+        piece.moved = True
+
+        # Clear the list of valid moves as has moved
+        piece.clear_moves()
+
+        # Sets the last move 
+        self.last_move = move
+
+
+    def valid_move(self, piece, move):
+        return move in piece.moves
 
 
     # Calculate all the valid moves that a piece can take
@@ -133,6 +158,7 @@ class Board:
                 ( row + 1, col)
             ]
 
+            # Normal moves
             for possible_move in possible_moves:
                 possible_move_row, possible_move_col = possible_move
 
@@ -148,7 +174,6 @@ class Board:
 
                         # Append new valid move
                         piece.add_move(move)
-
 
 
         if isinstance(piece, Pawn): 
@@ -221,4 +246,3 @@ class Board:
 
         # king
         self.squares[row_other][4] = Square(row_other, 4, King(color)) 
-        self.squares[5][4] = Square(5, 4, King(color)) 
