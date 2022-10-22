@@ -1,4 +1,9 @@
-#The main file
+"""
+The main file where stuff runs
+
+The underlying design of this concept was heavily inspired by Coding Spot
+and his video on designing chess in python. 
+"""
 
 from platform import release
 import pygame
@@ -108,6 +113,16 @@ class Main:
                     
                     
                     dragger.undrag_piece()
+
+                elif event.type == pygame.KEYDOWN:
+
+                    # Reseting the board
+                    if event.key == pygame.K_r:
+                        game.reset()
+                        game = self.game
+                        board = game.board
+                        dragger = game.dragger 
+
 
                 # quit the application
                 elif event.type == pygame.QUIT:
