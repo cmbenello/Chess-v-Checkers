@@ -11,6 +11,7 @@ class Game:
         self.board = Board()
         self.dragger = Dragger()
 
+
     #Show Methods
 
     def show_bg(self, surface):
@@ -23,6 +24,7 @@ class Game:
                 
                 rect = (col * SQSIZE, row * SQSIZE, SQSIZE, SQSIZE)
                 pygame.draw.rect(surface, color, rect)
+
 
     def show_pieces(self, surface):
         for row in range(ROWS):
@@ -39,3 +41,20 @@ class Game:
                                     row * SQSIZE + SQSIZE // 2
                         piece.texture_rect = img.get_rect(center = img_center) #xtx idk what this does
                         surface.blit(img, piece.texture_rect) 
+    
+    
+    def show_moves(self, surface):
+        if self.dragger.dragging: 
+            piece = self.dragger.piece
+
+            # Loop all valid moves and draw them
+            for move in piece.moves:
+
+                # Color
+                color = '#C86464' if(move.final.row + move.final.col) % 2 == 0 \
+                                else '#C84646'
+                # Rect
+                rect = (move.final.col * SQSIZE, move.final.row * SQSIZE, \
+                        SQSIZE, SQSIZE)
+                # blit
+                pygame.draw.rect(surface, color, rect)
