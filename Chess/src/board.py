@@ -1,6 +1,7 @@
 """
 Responsbile for the creation and movement of the pieces on the board
 """
+from numpy import isin
 from const import *
 from square import Square
 from piece import *
@@ -31,7 +32,12 @@ class Board:
         if isinstance(piece, Pawn):
             self.check_promotion(piece, final)
 
-
+        # King Castling
+        if isinstance(piece, King):
+            if self.castling(intial, final):
+                diff = final.col - intial.col
+                rook = piece.left_rook if (diff < 0) else piece.right_rook
+                self.move(rook, rook.moves[-1])
 
         # Piece has now moved so update the moved attribute
         piece.moved = True
@@ -50,6 +56,10 @@ class Board:
     def check_promotion(self, piece, final):
         if final.row == 0 or final.row == 7:
             self.squares[final.row][final.col].piece = Queen(piece.color)
+
+
+    def castling(self, intial, final):
+        return abs(intial.col - final.col) == 2
 
 
     # Calculate all the valid moves that a piece can take
@@ -187,7 +197,59 @@ class Board:
 
                         # Append new valid move
                         piece.add_move(move)
+            
+            # Castling moves 
+            if not piece.moved:
+                # Queen castling 
+                left_rook = self.squares[row][0].piece
+                if isinstance(left_rook, Rook):
+                    if not left_rook.moved:
+                        # Columns between the rook and queen
+                        for c in range(1, 4): 
+                            # Castling is not possible as pieces inbetween
+                            if self.squares[row][c].has_piece():
+                                break
 
+                        # No pieces in between so adds left rook to king
+                        piece.left_rook = left_rook
+
+                        # Move for the rook
+                        intial = Square(row, 0)
+                        final = Square(row, 3)
+                        move = Move(intial, final)
+                        left_rook.add_move(move)
+
+                        # Move for the king
+                        intial = Square(row, col)
+                        final = Square(row, 2)
+                        move = Move(intial, final)
+                        piece.add_move(move)
+
+                # King castling 
+                right_rook = self.squares[row][7].piece
+                if isinstance(right_rook, Rook):
+                    if not right_rook.moved:
+                        # Columns between the rook and king
+                        for c in range(5, 7): 
+                            # Castling is not possible as pieces inbetween
+                            if self.squares[row][c].has_piece():
+                                break
+
+                        # No pieces in between so adds right rook to king
+                        piece.right_rook = right_rook
+
+                        # Move for the rook
+                        intial = Square(row, 7)
+                        final = Square(row, 5)
+                        move = Move(intial, final)
+                        right_rook.add_move(move)
+
+                        # Move for the king
+                        intial = Square(row, col)
+                        final = Square(row, 6)
+                        move = Move(intial, final)
+                        piece.add_move(move)
+                        
 
         if isinstance(piece, Pawn): 
             pawn_moves()
