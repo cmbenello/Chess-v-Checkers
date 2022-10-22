@@ -1,4 +1,6 @@
-
+"""
+Responsbile for the creation and movement of the pieces on the board
+"""
 from const import *
 from square import Square
 from piece import *

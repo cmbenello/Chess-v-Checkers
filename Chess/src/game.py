@@ -1,4 +1,7 @@
-from tkinter import CENTER
+"""
+Does the game logic, respsonsible for player turns and showing the board
+"""
+
 import pygame
 
 from const import *
@@ -8,7 +11,9 @@ from dragger import Dragger
 class Game:
 
     def __init__(self) -> None:
-        self.board = Board()
+        self.next_player = "white"
+        self.hovered_sqr = None 
+        self.board = Board()    
         self.dragger = Dragger()
 
 
@@ -52,9 +57,46 @@ class Game:
 
                 # Color
                 color = '#C86464' if(move.final.row + move.final.col) % 2 == 0 \
-                                else '#C84646'
+                        else '#C84646'
                 # Rect
                 rect = (move.final.col * SQSIZE, move.final.row * SQSIZE, \
                         SQSIZE, SQSIZE)
                 # blit
                 pygame.draw.rect(surface, color, rect)
+    
+    def show_last_move(self, surface):
+        if self.board.last_move:
+            intial = self.board.last_move.intial
+            final = self.board.last_move.final
+
+            for pos in [intial, final]:
+                # Color
+                color = (244, 247, 116) if (pos.row + pos.col) % 2 == 0 \
+                        else (172, 195, 51)
+
+                # Rect
+                rect = (pos.col * SQSIZE, pos.row * SQSIZE, SQSIZE, SQSIZE)
+
+                # blit
+                pygame.draw.rect(surface, color, rect)
+
+    def show_hover(self, surface):
+        if self.hovered_sqr:
+            # Color 
+            color = (180, 180, 180)
+
+            # Rect
+            rect = (self.hovered_sqr.col * SQSIZE, \
+                    self.hovered_sqr.row * SQSIZE, SQSIZE, SQSIZE)
+            
+            # blit
+            pygame.draw.rect(surface, color, rect, width = 3)
+
+
+    # Other methods
+
+    def next_turn(self):
+        self.next_player = "white" if self.next_player == "black" else "black"
+
+    def set_hover(self, row, col):
+        self.hovered_sqr = self.board.squares[row][col]
