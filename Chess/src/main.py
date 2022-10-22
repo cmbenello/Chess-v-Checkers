@@ -56,7 +56,7 @@ class Main:
                         piece = board.squares[clicked_row][clicked_col].piece
                         # If the piece is of the right color
                         if piece.color == game.next_player:
-                            board.calc_moves(piece, clicked_row, clicked_col)
+                            board.calc_moves(piece, clicked_row, clicked_col, bool = True)
                             dragger.save_intial(event.pos)
                             dragger.drag_piece(piece)
 
@@ -102,6 +102,8 @@ class Main:
                         # Checking if the move is valid
                         if board.valid_move(dragger.piece, move):
                             board.move(dragger.piece, move)
+                            
+                            board.set_true_en_passant(dragger.piece)
 
                             # Show methods
                             game.show_bg(screen)
